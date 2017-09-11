@@ -1,0 +1,16 @@
+{
+  "name": "web-ccontent-management-services",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "express": "~4.15.2",
+    "mongoose": "^4.11.10",
+    "node-uuid": "^1.4.8"
+  }
+}
