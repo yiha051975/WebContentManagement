@@ -20,9 +20,24 @@ const userSchema = new Schema({
     lastName: String,
     roles: [{
         type: String
+    }],
+    projects: [{
+        type: String
     }]
 }, {
-    id: false
+    toObject: {
+        transform: function (doc, ret) {
+            ret._id = ret.id;
+            delete ret.id;
+        }
+    },
+    toJSON: {
+        transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+        }
+    }
 });
 
 mongoose.model('users', userSchema);
