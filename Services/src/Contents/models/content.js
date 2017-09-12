@@ -12,7 +12,10 @@ module.exports = function(dbConnection) {
         projectId: {
             type: String
         },
-        content: String
+        content: String,
+        contentHistory: [{
+            type: String
+        }]
     }, {
         toObject: {
             transform: function (doc, ret) {
