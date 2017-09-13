@@ -4,27 +4,27 @@ const { Schema } = mongoose;
 const uuid = require('node-uuid');
 
 module.exports = function(dbConnection) {
-    const contentSchema = new Schema({
+    const contentHistorySchema = new Schema({
         _id: {
             type: String,
             default: uuid.v4,
         },
-        projectId: {
+        contentId: {
             type: String,
-            required: 'ProjectId is required'
+            required: 'ContentId is required'
+        },
+        userId: {
+            type: String,
+            required: 'userId is required'
         },
         content: {
             type: String,
             required: 'Content is required'
         },
-        contentName: {
-            type: String,
-            unique: true,
-            required: 'Content Name is required'
-        },
-        contentHistory: [{
-            type: String
-        }]
+        updatedTime: {
+            type: Date,
+            default: Date.now
+        }
     }, {
         toObject: {
             transform: function (doc, ret) {
@@ -41,5 +41,5 @@ module.exports = function(dbConnection) {
         }
     });
 
-    dbConnection.model('contents', contentSchema);
+    dbConnection.model('contentHistory', contentHistorySchema);
 };

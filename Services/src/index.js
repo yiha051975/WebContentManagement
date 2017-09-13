@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bodyparser = require('body-parser');
 const users = require('./Users/routes/users-routes');
 const roles = require('./Roles/routes/roles-routes');
 const contents = require('./Contents/routes/contents-routes');
@@ -10,6 +11,7 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(cookieParser());
+app.use(bodyparser.json());
 
 // Actual Rest API
 app.use('/users', users);

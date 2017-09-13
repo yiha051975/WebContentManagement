@@ -2,12 +2,12 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const keys = require('../config/keys');
-const roleConn = mongoose.createConnection(keys.contentDBUrl);
-require('../models/content')(roleConn);
-const Content = roleConn.model('contents');
+const contentConn = mongoose.createConnection(keys.contentDBUrl);
+require('../models/content')(contentConn);
+const Content = contentConn.model('contents');
 const Gridfs = require('gridfs-stream');
 const fs = require('fs');
-const gfs = new Gridfs(roleConn.db, mongoose.mongo);
+const gfs = new Gridfs(contentConn.db, mongoose.mongo);
 
 function createNewContent(content) {
     const contentSchema = new Content(content);
@@ -19,8 +19,12 @@ function updateProject(contentId, content) {
     return Content.findOneAndUpdate({_id: contentId}, content, {new: true});
 }
 
-function findProjectById(id) {
+function findContentById(id) {
     return Content.findById(id).exec();
+}
+
+function findContentsByProjectId(projectId) {
+    return Content.find({projectId}).exec();
 }
 
 function deleteProjectById(_id) {
@@ -54,7 +58,8 @@ function retrieveFileMeta(_id, callback = () => {}) {
 
 module.exports = {
     createNewContent,
-    findProjectById,
+    findContentById,
+    findContentsByProjectId,
     updateProject,
     deleteProjectById,
     persistFile,
