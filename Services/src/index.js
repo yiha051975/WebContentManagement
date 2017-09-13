@@ -4,6 +4,7 @@ const bodyparser = require('body-parser');
 const users = require('./Users/routes/users-routes');
 const roles = require('./Roles/routes/roles-routes');
 const contents = require('./Contents/routes/contents-routes');
+const contentHistory = require('./ContentHistory/routes/content-history-routes');
 const cors = require('cors');
 
 const app = express();
@@ -18,6 +19,7 @@ app.use('/users', users);
 app.use('/roles', roles);
 
 app.use('/contents', contents);
+app.use('/contentHistory', contentHistory);
 
 app.listen(3000, function () {
     console.log('Service listening on port 3000!')
