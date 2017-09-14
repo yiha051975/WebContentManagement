@@ -1,3 +1,3 @@
 module.exports = {
-    contentHistoryDBUrl: process.env.CONTENT_DB_URL
+    contentHistoryDBUrl: process.env.CONTENT_HISTORY_DB_URL
 };

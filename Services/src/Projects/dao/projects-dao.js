@@ -26,9 +26,14 @@ function deleteProjectById(_id) {
     return Project.remove({_id});
 }
 
+function findProjectsByIds(ids) {
+    return Project.find({}).or(ids).exec();
+}
+
 module.exports = {
     createNewProject,
     findProjectById,
     updateProject,
-    deleteProjectById
+    deleteProjectById,
+    findProjectsByIds
 };

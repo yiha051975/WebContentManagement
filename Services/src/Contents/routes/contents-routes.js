@@ -4,16 +4,16 @@ const router = express.Router();
 const multiparty = require('multiparty');
 const dao = require('../dao/contents-dao');
 const _ = require('lodash');
+const http = require('http');
 
 router.get('/getFile/:fileId', (req, res, next) => {
-    const readStream = dao.retrieveFile(req.params.fileId);
-
     dao.retrieveFileMeta(req.params.fileId, (err, file) => {
         if (err) {
             res.status(500).send(err);
         } else if (!file) {
             res.status(404).send({message: 'File not found.'});
         } else {
+            const readStream = dao.retrieveFile(req.params.fileId);
             res.set('Content-Type', file.contentType);
             res.set('Content-Disposition', `inline; filename=${file.filename}`);
             readStream.pipe(res);
@@ -23,7 +23,7 @@ router.get('/getFile/:fileId', (req, res, next) => {
 
 router.post('/createContent', async (req, res, next) => {
     if (req.body.content) {
-        return saveNewContent(res, req.body);
+        return saveNewContent(res, req.body, req.headers);
     } else {
         const form = new multiparty.Form();
 
@@ -33,7 +33,8 @@ router.post('/createContent', async (req, res, next) => {
             } else {
                 const content = {
                     projectId: fields.projectId[0],
-                    contentName: fields.contentName[0]
+                    contentName: fields.contentName[0],
+                    comment: fields.comment[0]
                 };
                 if (files.content) {
                     dao.persistFile(files.content[0], persistedFile => {
@@ -51,10 +52,32 @@ router.post('/createContent', async (req, res, next) => {
     }
 });
 
-async function saveNewContent(res, content) {
+async function saveNewContent(res, content, headers, userId) {
     try {
         const result = await dao.createNewContent(content);
-        res.status(201).send(result);
+        const contentHistory = {
+            contentId: result._id,
+            userId,
+            content: result.content,
+            comment: result.comment
+        };
+
+        const request = http.request({
+            host: 'localhost',
+            port: '3000',
+            path: '/contentHistory/createContentHistory',
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }, response => {
+            response.setEncoding('utf8');
+            response.on('data', function (chunk) {
+                res.status(201).send(result);
+            });
+        });
+        request.write(JSON.stringify(contentHistory));
+        request.end();
     } catch (error) {
         res.status(500).send(error);
     }

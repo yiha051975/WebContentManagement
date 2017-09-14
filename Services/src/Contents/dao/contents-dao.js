@@ -8,6 +8,7 @@ const Content = contentConn.model('contents');
 const Gridfs = require('gridfs-stream');
 const fs = require('fs');
 const gfs = new Gridfs(contentConn.db, mongoose.mongo);
+const contentHistoryDAO = require('../../ContentHistory/dao/content-history-dao');
 
 function createNewContent(content) {
     const contentSchema = new Content(content);
@@ -15,7 +16,8 @@ function createNewContent(content) {
     return contentSchema.save();
 }
 
-function updateProject(contentId, content) {
+function updateContent(contentId, content) {
+
     return Content.findOneAndUpdate({_id: contentId}, content, {new: true});
 }
 
@@ -60,7 +62,7 @@ module.exports = {
     createNewContent,
     findContentById,
     findContentsByProjectId,
-    updateProject,
+    updateContent,
     deleteProjectById,
     persistFile,
     retrieveFile,

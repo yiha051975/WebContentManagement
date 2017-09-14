@@ -12,10 +12,7 @@ module.exports = function(dbConnection) {
         project: {
             type: String,
             unique: true
-        },
-        contents: [{
-            type: String
-        }]
+        }
     }, {
         toObject: {
             transform: function (doc, ret) {

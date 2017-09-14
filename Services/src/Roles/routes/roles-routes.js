@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const dao = require('../dao/roles-dao');
-const bodyParser = require('body-parser');
 
 router.get('/getRole/:roleId', async (req, res, next) => {
     try {
@@ -17,7 +16,7 @@ router.get('/getRole/:roleId', async (req, res, next) => {
     }
 });
 
-router.post('/createRole', bodyParser.json(), async (req, res, next) => {
+router.post('/createRole', async (req, res, next) => {
     try {
         const result = await dao.createNewRole(req.body.role);
         res.status(201).send(result);
@@ -26,7 +25,7 @@ router.post('/createRole', bodyParser.json(), async (req, res, next) => {
     }
 });
 
-router.put('/updateRole/:roleId', bodyParser.json(), async (req, res, next) => {
+router.put('/updateRole/:roleId', async (req, res, next) => {
     try {
         const result = await dao.updateRole(req.params.roleId, req.body);
         if (result) {
@@ -44,7 +43,7 @@ router.delete('/removeRole/:roleId', async (req, res, next) => {
         const result = await dao.deleteRoleById(req.params.roleId);
         res.status(204).send();
     } catch(error) {
-        res.status(500).send();
+        res.status(500).send(error);
     }
 });
 

@@ -1,30 +1,24 @@
-'use strict';
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const uuid = require('node-uuid');
 
 module.exports = function(dbConnection) {
-    const contentSchema = new Schema({
+    const userProjectRoleSchema = new Schema({
         _id: {
             type: String,
-            default: uuid.v4,
+            default: uuid.v4
+        },
+        userId: {
+            type: String,
+            required: 'UserId is required.'
         },
         projectId: {
             type: String,
-            required: 'ProjectId is required'
+            required: 'ProjectId is required.'
         },
-        content: {
+        roleId: {
             type: String,
-            required: 'Content is required'
-        },
-        contentName: {
-            type: String,
-            unique: true,
-            required: 'Content Name is required'
-        },
-        comment: {
-            type: String,
-            default: ''
+            required: 'RoleId is required.'
         }
     }, {
         toObject: {
@@ -42,5 +36,5 @@ module.exports = function(dbConnection) {
         }
     });
 
-    dbConnection.model('contents', contentSchema);
+    dbConnection.model('userProjectRole', userProjectRoleSchema);
 };

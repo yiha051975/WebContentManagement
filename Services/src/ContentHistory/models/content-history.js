@@ -21,6 +21,10 @@ module.exports = function(dbConnection) {
             type: String,
             required: 'Content is required'
         },
+        comment: {
+            type: String,
+            default: ''
+        },
         updatedTime: {
             type: Date,
             default: Date.now
