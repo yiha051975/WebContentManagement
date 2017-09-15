@@ -6,6 +6,7 @@ const dao = require('../dao/users-dao');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const userAuth = require('../middlewares/user-auth-middleware');
+const userProjectRoleMiddleware = require('../../UsersProjectsRoles/middlewares/user-project-role-middleware');
 
 router.post('/createUser', async (req, res, next) => {
     try {
@@ -95,7 +96,7 @@ router.put('/updateUser', userAuth, async (req, res, next) => {
 });
 
 if (process.env.NODE_ENV !== 'production') {
-    router.get('/testCookie', userAuth, (req, res, next) => {
+    router.get('/testCookie', userAuth, userProjectRoleMiddleware, (req, res, next) => {
         res.status(200).send();
     });
 }
