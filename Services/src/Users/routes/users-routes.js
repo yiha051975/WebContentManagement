@@ -8,6 +8,75 @@ const keys = require('../config/keys');
 const userAuth = require('../middlewares/user-auth-middleware');
 const userProjectRoleMiddleware = require('../../UsersProjectsRoles/middlewares/user-project-role-middleware');
 
+/**
+ * @swagger
+ * definition:
+ *      User:
+ *          properties:
+ *              active:
+ *                  type: boolean
+ *                  example: true
+ *              email:
+ *                  type: string
+ *                  example: test@test.com
+ *              firstName:
+ *                  type: string
+ *                  example: test_firstName
+ *              id:
+ *                  type: string
+ *                  example: 82484b39-93bc-4151-a2f1-0dc7d120a032
+ *              lastName:
+ *                  type: string
+ *                  example: test_lastName
+ *              username:
+ *                  type: string
+ *                  example: test_username
+ */
+
+/**
+ * @swagger
+ * /api/users/createUser:
+ *      post:
+ *          tags:
+ *              - Users
+ *          description: Create new user
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: User
+ *                description: User Object
+ *                in: body
+ *                type: application/json
+ *                schema:
+ *                  properties:
+ *                      email:
+ *                          type: string
+ *                          example: test@test.com
+ *                      firstName:
+ *                          type: string
+ *                          example: test_firstName
+ *                      lastName:
+ *                          type: string
+ *                          example: test_lastName
+ *                      password:
+ *                          type: string
+ *                          example: test_password
+ *                      username:
+ *                          type: string
+ *                          example: test_username
+ *          responses:
+ *              201:
+ *                  description: new user object
+ *                  schema:
+ *                      $ref: '#/definitions/User'
+ *              500:
+ *                  description: Unable to create User
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: Unable to create User
+ */
 router.post('/createUser', async (req, res, next) => {
     try {
         const encryptedPassword = await passwordUtils.saltAndHash(req.body.password);
@@ -36,13 +105,61 @@ router.post('/createUser', async (req, res, next) => {
             delete response.password;
             res.status(201).json(response);
         } else {
-            res.status(500).send();
+            res.status(500).send({message: 'Unable to create User'});
         }
     } catch(error) {
         res.status(500).send(error);
     }
 });
 
+/**
+ * @swagger
+ * /api/users/authenticate:
+ *      post:
+ *          tags:
+ *              - Users
+ *          description: Authenticate user
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: Username and password
+ *                description: Username and password
+ *                in: body
+ *                type: application/json
+ *                schema:
+ *                  properties:
+ *                      password:
+ *                          type: string
+ *                          example: test_password
+ *                      username:
+ *                          type: string
+ *                          example: test_username
+ *          responses:
+ *              200:
+ *                  description: Authenticated user object
+ *                  schema:
+ *                      $ref: '#/definitions/User'
+ *              401:
+ *                  description: Unable to authenticate
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: Incorrect Username or password.
+ *              404:
+ *                  description: User not found
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: User not found.
+ *              500:
+ *                  description: Unable to create User
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
 router.post('/authenticate', async (req, res, next) => {
     try {
         const result = await dao.getUserByUsrname(req.body.username);
@@ -72,17 +189,80 @@ router.post('/authenticate', async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/users/logout:
+ *      get:
+ *          tags:
+ *              - Users
+ *          description: Log off a user
+ *          produces:
+ *              - N/A
+ *          responses:
+ *              204:
+ *                  description: No Content will be returned
+ */
 router.get('/logout', (req, res, next) => {
     res.clearCookie('token');
     res.status(204).send();
 });
 
-router.put('/updateUser', userAuth, async (req, res, next) => {
+/**
+ * @swagger
+ * /api/users/authenticate:
+ *      put:
+ *          tags:
+ *              - Users
+ *          description: Update user
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: User
+ *                description: User Object
+ *                in: body
+ *                type: application/json
+ *                schema:
+ *                  properties:
+ *                      email:
+ *                          type: string
+ *                          example: test@test.com
+ *                      firstName:
+ *                          type: string
+ *                          example: test_firstName
+ *                      lastName:
+ *                          type: string
+ *                          example: test_lastName
+ *                      password:
+ *                          type: string
+ *                          example: test_password
+ *                      username:
+ *                          type: string
+ *                          example: test_username
+ *          responses:
+ *              200:
+ *                  description: Updated user object
+ *                  schema:
+ *                      $ref: '#/definitions/User'
+ *              404:
+ *                  description: User not found
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: Unable to update user.
+ *              500:
+ *                  description: Unable to create User
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
+router.put('/updateUser/:userId', userAuth, async (req, res, next) => {
     try {
         if (req.body.password) {
             req.body.password = await passwordUtils.saltAndHash(req.body.password);
         }
-        const result = await dao.updateUser(req.user.id, req.body);
+        const result = await dao.updateUser(req.params.userId, req.body);
         if (result) {
             const response = result.toJSON();
             delete response.password;

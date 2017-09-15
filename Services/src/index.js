@@ -8,6 +8,20 @@ const userProjectRoles = require('./UsersProjectsRoles/routes/user-project-role-
 const contents = require('./Contents/routes/contents-routes');
 const contentHistory = require('./ContentHistory/routes/content-history-routes');
 const cors = require('cors');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+const swaggerSpec = swaggerJSDoc({
+    swaggerDefinition: {
+        info: {
+            title: 'Web Content Management API',
+            version: '1.0.0',
+            description: 'Web Content Management API'
+        },
+        host: 'localhost:3000',
+        basePath: '/'
+    },
+    apis: ['./*/routes/*.js']
+});
 
 const app = express();
 
@@ -21,12 +35,17 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Actual Rest API
-app.use('/users', users);
-app.use('/roles', roles);
-app.use('/projects', projects);
-app.use('/userProjectRoles', userProjectRoles);
-app.use('/contents', contents);
-app.use('/contentHistory', contentHistory);
+app.use('/api/users', users);
+app.use('/api/roles', roles);
+app.use('/api/projects', projects);
+app.use('/api/userProjectRoles', userProjectRoles);
+app.use('/api/contents', contents);
+app.use('/api/contentHistory', contentHistory);
+
+app.get('/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 app.listen(3000, function () {
     console.log('Service listening on port 3000!')
