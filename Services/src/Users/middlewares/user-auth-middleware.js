@@ -13,6 +13,10 @@ module.exports = (req, res, next) => {
             const user = await dao.getUserByUserId(decoded.id);
 
             if (user) {
+                if (!user.active) {
+                    return res.status(401).send({message: 'Unable to authenticate user.'})
+                }
+
                 // if everything is good, save to request for use in other routes
                 req.user = user.toJSON();
                 const token = jwt.sign({id: req.user.id}, keys.jwtPrivateKey, {
@@ -24,7 +28,7 @@ module.exports = (req, res, next) => {
                     secure: process.env.NODE_ENV === 'production', // force browser to send cookie only in https request
                     httpOnly: true
                 });
-                
+
                 next();
             } else {
                 res.clearCookie('token');

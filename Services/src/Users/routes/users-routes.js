@@ -165,7 +165,7 @@ router.post('/authenticate', async (req, res, next) => {
         const result = await dao.getUserByUsrname(req.body.username);
         if (result) {
             const response = result.toJSON();
-            if (passwordUtils.comparePassword(req.body.password, response.password)) {
+            if (response.active && passwordUtils.comparePassword(req.body.password, response.password)) {
                 const token = jwt.sign({id: response.id}, keys.jwtPrivateKey, {
                     expiresIn: 60 * 60 // expires in 1 hour
                 });
