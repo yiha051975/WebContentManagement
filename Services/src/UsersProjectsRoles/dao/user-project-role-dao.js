@@ -13,7 +13,7 @@ function createNewUserProjectRole(userProjectRole) {
 }
 
 function updateUserProjectRole(userProjectRole) {
-    return UserProjectRole.findOneAndUpdate({_id: userProjectRole.id}, userProjectRole, {new: true});
+    return UserProjectRole.findOneAndUpdate({projectId: userProjectRole.projectId, userId: userProjectRole.userId}, userProjectRole, {new: true});
 }
 
 function findUserProjectRoleByUserId(userId) {

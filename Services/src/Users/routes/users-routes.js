@@ -13,9 +13,6 @@ const userProjectRoleMiddleware = require('../../UsersProjectsRoles/middlewares/
  * definition:
  *      User:
  *          properties:
- *              active:
- *                  type: boolean
- *                  example: true
  *              email:
  *                  type: string
  *                  example: test@test.com
@@ -103,6 +100,7 @@ router.post('/createUser', async (req, res, next) => {
             });
 
             delete response.password;
+            delete response.active;
             res.status(201).json(response);
         } else {
             res.status(500).send({message: 'Unable to create User'});
@@ -177,6 +175,7 @@ router.post('/authenticate', async (req, res, next) => {
                 });
 
                 delete response.password;
+                delete response.active;
                 res.status(200).send(response);
             } else {
                 res.status(401).send({message: 'Incorrect Username or password.'});

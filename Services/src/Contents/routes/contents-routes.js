@@ -8,6 +8,62 @@ const restTemplate = require('../../utils/rest-template');
 const userAuth = require('../../Users/middlewares/user-auth-middleware');
 const userProjectRoleMiddleware = require('../../UsersProjectsRoles/middlewares/user-project-role-middleware');
 
+/**
+ * @swagger
+ * definition:
+ *      Content:
+ *          properties:
+ *              id:
+ *                  type: string
+ *                  example: 67789f33-95f5-466d-a1d9-b4c1f809d6d8
+ *              projectId:
+ *                  type: string
+ *                  example: 513d644e-47d7-453b-8d6b-18a91446c615
+ *              contentName:
+ *                  type: string
+ *                  example: test_content_2
+ *              content:
+ *                  type: string
+ *                  example: http://localhost:3000/contents/getFile/59bb317b1d1af93d9cfe52f3
+ *              comment:
+ *                  type: string
+ *                  example: This is a test content 2 comment.
+ */
+
+/**
+ * @swagger
+ * /api/contents/getFile/{fileId}:
+ *      get:
+ *          tags:
+ *              - Contents
+ *          description: Retrieve the binary data from database
+ *          produces:
+ *              - application/octet-stream
+ *          parameters:
+ *              - name: fileId
+ *                description: fileId string
+ *                in: path
+ *                type: string
+ *                example: 59bb317b1d1af93d9cfe52f3
+ *          responses:
+ *              200:
+ *                  description: Return an existing file from database
+ *                  schema:
+ *                      type: file
+ *              404:
+ *                  description: Unable to locate file from database
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: File not found
+ *              500:
+ *                  description: Server side error.
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
 router.get('/getFile/:fileId', (req, res, next) => {
     dao.retrieveFileMeta(req.params.fileId, (err, file) => {
         if (err) {
@@ -23,6 +79,53 @@ router.get('/getFile/:fileId', (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/contents/createContent:
+ *      post:
+ *          tags:
+ *              - Contents
+ *          description: Create a new content
+ *          consumes:
+ *              - multipart/form-data
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: projectId
+ *                description: projectId string
+ *                in: formData
+ *                type: string
+ *                required: true
+ *                example: 513d644e-47d7-453b-8d6b-18a91446c615
+ *              - name: contentName
+ *                description: content name that will be used for the client side to append content
+ *                in: formData
+ *                type: string
+ *                required: true,
+ *                example: test_content_3
+ *              - name: content
+ *                description: content that can be a string or a file
+ *                in: formData
+ *                type: string
+ *                required: true
+ *                example: This is a test content
+ *              - name: comment
+ *                description: comment that is for other user to identify the purpose of this content
+ *                in: formData
+ *                type: string
+ *                example: This is a test comment
+ *          responses:
+ *              201:
+ *                  description: Return a newly created Content from database
+ *                  schema:
+ *                      $ref: '#/definitions/Content'
+ *              500:
+ *                  description: Server side error.
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
 router.post('/createContent', userAuth, userProjectRoleMiddleware, async (req, res, next) => {
     if (req.body.content) {
         return saveNewContent(res, req.body, req.headers, req.user.id);
@@ -76,7 +179,6 @@ async function saveNewContent(res, content, headers, userId) {
         if (response && response.statusCode === 201) {
             res.status(201).send(result.toJSON());
         } else {
-
             res.status(500).send({message: 'Unable to create new Content'});
         }
     } catch (error) {
@@ -84,6 +186,41 @@ async function saveNewContent(res, content, headers, userId) {
     }
 }
 
+/**
+ * @swagger
+ * /api/contents/getContent/{contentId}:
+ *      get:
+ *          tags:
+ *              - Contents
+ *          description: retrieve existing contents by content id
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: contentId
+ *                description: contentId string
+ *                in: path
+ *                type: string
+ *                required: true
+ *                example: 67789f33-95f5-466d-a1d9-b4c1f809d6d8
+ *          responses:
+ *              200:
+ *                  description: Return all the existing contents that has the project id specified
+ *                  schema:
+ *                      $ref: '#/definitions/Content'
+ *              404:
+ *                  description: Content not found
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: Content not found.
+ *              500:
+ *                  description: Server side error.
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
 router.get('/getContent/:contentId', async (req, res, next) => {
     try {
         const result = await dao.findContentById(req.params.contentId);
@@ -97,6 +234,43 @@ router.get('/getContent/:contentId', async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/contents/getContentByProject/{projectId}:
+ *      get:
+ *          tags:
+ *              - Contents
+ *          description: retrieve existing contents by project id
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: projectId
+ *                description: projectId string
+ *                in: path
+ *                type: string
+ *                required: true
+ *                example: 513d644e-47d7-453b-8d6b-18a91446c615
+ *          responses:
+ *              200:
+ *                  description: Return all the existing contents that has the project id specified
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/definitions/Content'
+ *              404:
+ *                  description: Content not found
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ *                              example: Contents not found.
+ *              500:
+ *                  description: Server side error.
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
 router.get('/getContentByProject/:projectId', async (req, res, next) => {
     try {
         const result = await dao.findContentsByProjectId(req.params.projectId);
@@ -110,6 +284,34 @@ router.get('/getContentByProject/:projectId', async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/contents/updateContent/{contentId}:
+ *      put:
+ *          tags:
+ *              - Contents
+ *          description: retrieve existing contents by project id
+ *          produces:
+ *              - application/json
+ *          parameters:
+ *              - name: contentId
+ *                description: contentId string
+ *                in: path
+ *                type: string
+ *                required: true
+ *                example: 67789f33-95f5-466d-a1d9-b4c1f809d6d8
+ *          responses:
+ *              200:
+ *                  description: Update the existing Content with new content
+ *                  schema:
+ *                      $ref: '#/definitions/Content'
+ *              500:
+ *                  description: Server side error.
+ *                  schema:
+ *                      properties:
+ *                          message:
+ *                              type: string
+ */
 router.put('/updateContent/:contentId', userAuth, userProjectRoleMiddleware, async (req, res, next) => {
     if (req.body.content) {
         return updateContent(res, req.params.contentId, req.body, req.headers, req.user.id);

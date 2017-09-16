@@ -36,5 +36,7 @@ module.exports = function(dbConnection) {
         }
     });
 
+    userProjectRoleSchema.index({userId: 1, projectId: 1}, {unique: true});
+
     dbConnection.model('userProjectRole', userProjectRoleSchema);
 };

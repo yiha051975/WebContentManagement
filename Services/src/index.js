@@ -40,7 +40,7 @@ app.use('/api/roles', roles);
 app.use('/api/projects', projects);
 app.use('/api/userProjectRoles', userProjectRoles);
 app.use('/api/contents', contents);
-app.use('/api/contentHistory', contentHistory);
+app.use('/api/contentHistories', contentHistory);
 
 app.get('/swagger.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
