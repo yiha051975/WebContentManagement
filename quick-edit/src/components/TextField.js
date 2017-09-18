@@ -39,7 +39,7 @@ class TextField extends Component {
         return (
             <div className="input-field col s12">
                 <input {...input} id={this.state.id} type={type} className={`text-field validate${isInvalid}`} />
-                <label htmlFor={this.state.id} data-error={error}>{label}</label>
+                <label htmlFor={this.state.id} data-error={touched && error ? error : ''}>{label}</label>
             </div>
         );
     }

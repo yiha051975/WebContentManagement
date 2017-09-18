@@ -1,25 +1,33 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import ProjectContent from '../containers/ProjectContent';
+/*import ProjectContent from '../containers/ProjectContent';*/
 import {connect} from 'react-redux';
-
+import {initializeAccordion} from '../utils/accordion-utils';
+import {projectSelector} from '../reselect/projects-reselect';
 import {getProjectByProjectId} from '../redux/actions/project-actions';
 
 
 class ProjectList extends Component {
-   componentDidMount() {
-       this.props.getProjectByProjectId("513d644e-47d7-453b-8d6b-18a91446c615");
-   }
+    static propTypes = {
+        projects: PropTypes.array
+    };
 
     render() {
-       console.log(this.props.projects);
-        const hasProjects = Boolean(this.props.projects);
         return (
-            <div>
-                Yay the list will show here
-                {hasProjects ? <div>{this.props.projects.project} <ProjectContent /></div> : <div>test</div>
-                }
+            <div className="main-content-container">
+                <h4>Projects</h4>
+                <ul className="collapsible popout" data-collapsible="accordion" ref={initializeAccordion}>
+                    {
+                        this.props.projects.map((project, i) => {
+                            return (
+                                <li key={i}>
+                                    <div className="collapsible-header">{project.project}</div>
+                                    <div className="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
             </div>
         );
     }
@@ -27,8 +35,8 @@ class ProjectList extends Component {
 
 function mapStateToProps(state) {
     return {
-        projects: state.projects
-    }
+        projects: projectSelector(state)
+    };
 }
 
 export default connect(mapStateToProps, {getProjectByProjectId})(ProjectList);

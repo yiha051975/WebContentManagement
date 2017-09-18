@@ -6,10 +6,12 @@ import {connect} from 'react-redux';
 import {logoffUser} from '../redux/actions/user-actions';
 import {modalTriggerLinkOnClick} from '../utils/modal-utils';
 import {initializeDropDown} from '../utils/dropdown-utils';
+import {withRouter} from 'react-router-dom';
 
 class Header extends Component {
     static propTypes = {
         firstName: PropTypes.string,
+        history: PropTypes.object.isRequired,
         lastName: PropTypes.string,
         logoffUser: PropTypes.func.isRequired
     };
@@ -20,7 +22,7 @@ class Header extends Component {
     }
 
     logoutLinkOnClick(e) {
-        this.props.logoffUser();
+        this.props.logoffUser(this.props.history);
     }
 
     render() {
@@ -60,4 +62,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {logoffUser})(Header);
+export default withRouter(connect(mapStateToProps, {logoffUser})(Header));

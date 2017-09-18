@@ -188,6 +188,13 @@ router.post('/authenticate', async (req, res, next) => {
     }
 });
 
+router.get('/getUser', userAuth, (req, res, next) => {
+    const user = Object.assign({}, req.user);
+    delete user.active;
+    delete user.password;
+    res.status(200).send(user);
+});
+
 /**
  * @swagger
  * /api/users/logout:

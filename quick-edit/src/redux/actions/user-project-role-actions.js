@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {getContentsByProjectId} from './content-actions';
+import {getProjectByProjectId} from './project-actions';
 import {USER_PROJECT_ROLE_SUCCESS, USER_PROJECT_ROLE_FAILED} from '../actions/action-types';
 
 export function getUserProjectRole(userId) {
@@ -6,6 +8,10 @@ export function getUserProjectRole(userId) {
         axios.get(`/api/userProjectRoles/getUserProjectRoleByByUser/${userId}`)
             .then(response => {
                 if (response.status === 200) {
+                    response.data.forEach(userProjectRole => {
+                        dispatch(getProjectByProjectId(userProjectRole.projectId));
+                        dispatch(getContentsByProjectId(userProjectRole.projectId));
+                    });
                     dispatch(userProjectRolesRetrieved(response.data));
                 } else {
                     dispatch(userProjectRolesNotRetrieved({errMessage: response.data.message}));

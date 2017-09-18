@@ -4,13 +4,17 @@ import {reduxForm, Field, change as fieldChange} from 'redux-form';
 import {connect} from 'react-redux';
 import TextField from '../components/TextField';
 import {authenticateUser} from '../redux/actions/user-actions';
+import {withRouter} from 'react-router-dom';
+import {closeModal} from '../utils/modal-utils';
 
 class SigninForm extends Component {
     static propTypes = {
         authenticateUser: PropTypes.func.isRequired,
         fieldChange: PropTypes.func.isRequired,
         handleSubmit: PropTypes.func.isRequired,
+        history: PropTypes.object.isRequired,
         submitting: PropTypes.bool.isRequired,
+        untouch: PropTypes.func.isRequired,
         values: PropTypes.shape({
             username: PropTypes.string,
             password: PropTypes.string
@@ -23,9 +27,12 @@ class SigninForm extends Component {
     }
 
     onSubmit(values) {
-        this.props.authenticateUser(values);
+        this.props.authenticateUser(values, this.props.history);
+        this.props.untouch('sign-in-form', 'username');
         this.props.fieldChange('sign-in-form', 'username', '');
+        this.props.untouch('sign-in-form', 'password');
         this.props.fieldChange('sign-in-form', 'password', '');
+        closeModal('signin-modal');
     };
 
     render() {
@@ -38,7 +45,7 @@ class SigninForm extends Component {
                     <Field name="username" type="text" component={TextField} label="Username" />
                     <Field name="password" type="password" component={TextField} label="Password" />
                     <div className="modal-footer">
-                        <button type="submit" className="modal-action modal-close waves-effect waves-light btn" disabled={submitting}>Sign in</button>
+                        <button type="submit" className="waves-effect waves-light btn" disabled={submitting}>Sign in</button>
                     </div>
                 </form>
             </div>
@@ -71,4 +78,4 @@ function validate(values) {
 export default reduxForm({
     form: 'sign-in-form',
     validate
-})(connect(mapStateToProps, {authenticateUser, fieldChange})(SigninForm));
+})(withRouter(connect(mapStateToProps, {authenticateUser, fieldChange})(SigninForm)));

@@ -5,8 +5,8 @@ export function getContentHistoriesByContentId(contentId) {
     return dispatch => {
         axios.get(`/api/contentHistories/getContentHistory/${contentId}`)
             .then(response => {
-                if (response.status = 200) {
-                    dispatch(getContentHistoriesSuccess(response.data));
+                if (response.status === 200) {
+                    dispatch(getContentHistoriesSuccess(contentId, response.data));
                 } else {
                     dispatch(getContentHistoriesFailed({errMessage: response.data.message}));
                 }
@@ -17,10 +17,11 @@ export function getContentHistoriesByContentId(contentId) {
     };
 }
 
-function getContentHistoriesSuccess(contentHistories) {
+function getContentHistoriesSuccess(contentId, contentHistories) {
     return {
         type: RETRIEVE_CONTENT_HISTORY_SUCCESS,
-        payload: contentHistories
+        payload: contentHistories,
+        contentId
     };
 }
 
