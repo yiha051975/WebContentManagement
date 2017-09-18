@@ -5,6 +5,7 @@ import 'materialize-css/dist/js/materialize';
 import './App.css';
 import Header from './containers/Header';
 import SigninForm from './containers/SigninForm';
+import ProjectList from './containers/ProjectList';
 import {connect} from 'react-redux';
 
 import {initializeModalContainer} from './utils/modal-utils';
@@ -30,7 +31,7 @@ class App extends Component {
                             <SigninForm />
                         </div>
                     </div>
-                ) : null}
+                ) : <ProjectList />}
             </div>
         );
     }
