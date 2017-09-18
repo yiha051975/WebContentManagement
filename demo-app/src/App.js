@@ -23,6 +23,7 @@ class App extends Component {
         if(this.props.contents) {
             console.log(value);
             let contents = this.props.contents['513d644e-47d7-453b-8d6b-18a91446c615'];
+            console.log(contents);
             if(contents) {
                 let contentObject = _.find(contents, ['contentName', value]);
                 console.log(contentObject);
@@ -37,13 +38,14 @@ class App extends Component {
         return (
             <div className="App">
                 <Header />
-                <div className="row">
-                    <form onSubmit={handleSubmit(this.onSubmit)}>
-                        <Field name="username" type="text" component={TextField} label={this.getContent("test_content_1")} />
-                        <Field name="password" type="password" component={TextField} label={this.getContent("test_content_2" +
-                            "")} />
+
+                <div className="container">
+                    <h5 className="">Sign up</h5>
+                    <form className="row" onSubmit={handleSubmit(this.onSubmit)}>
+                        <Field name="username" type="text" component={TextField} label={this.getContent("name")} />
+                        <Field name="password" type="password" component={TextField} label={this.getContent("email")} />
                         <div className="right-align">
-                            <button type="submit" className="waves-effect waves-light btn right-align" disabled={submitting}>{this.getContent("test_content_1")}</button>
+                            <button type="submit" className="waves-effect waves-light btn right-align" disabled={submitting}>{this.getContent("submit button text")}</button>
                         </div>
                     </form>
                 </div>
