@@ -1,0 +1,16 @@
+.input-field {
+    display: inline-block;
+    width: 100%;
+}
+
+.text-field {
+    padding: 0 0.75em !important;
+    box-sizing: border-box !important;
+}
+
+.validation-text--error {
+    padding: 0 0.75rem;
+    font-size: 12px;
+    margin-top: -20px;
+    color: #F44336;
+}
