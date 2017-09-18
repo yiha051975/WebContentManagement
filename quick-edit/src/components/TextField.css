@@ -1,0 +1,9 @@
+.input-field {
+    display: inline-block;
+    width: 100%;
+}
+
+.text-field {
+    padding: 0 0.75em !important;
+    box-sizing: border-box !important;
+}
