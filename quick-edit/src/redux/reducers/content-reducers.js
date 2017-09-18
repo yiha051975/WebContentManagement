@@ -1,10 +1,11 @@
-import {RETRIEVE_CONTENT_SUCCESS, RETRIEVE_CONTENT_FAILED, LOGOFF_SUCCESS} from '../actions/action-types';
+import {RETRIEVE_CONTENT_SUCCESS, RETRIEVE_CONTENT_FAILED, LOGOFF_SUCCESS, UPDATE_CONTENT_SUCCESS} from '../actions/action-types';
 import _ from 'lodash';
 
 export default function(state = {}, action = {}) {
+    let copiedState;
     switch(action.type) {
         case RETRIEVE_CONTENT_SUCCESS:
-            const copiedState = _.cloneDeep(state);
+            copiedState = _.cloneDeep(state);
 
             copiedState[action.projectId] = action.payload;
 
@@ -13,6 +14,12 @@ export default function(state = {}, action = {}) {
             return action.payload;
         case LOGOFF_SUCCESS:
             return {};
+        case UPDATE_CONTENT_SUCCESS:
+            copiedState = _.cloneDeep(state);
+
+            copiedState[action.payload.projectId] = action.payload;
+
+            return copiedState;
         default:
             return state;
     }

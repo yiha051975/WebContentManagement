@@ -2,3 +2,15 @@
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.flex {
+    display: flex;
+}
+
+.flex.row {
+    flex-direction: row;
+}
+
+.margin-left-auto {
+    margin-left: auto;
+}

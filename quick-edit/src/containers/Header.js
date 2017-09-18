@@ -33,7 +33,7 @@ class Header extends Component {
                 <nav>
                     <div className="nav-wrapper">
                         <a href="#!" className="brand-logo"><img src={logo} className="App-logo" alt="logo"/><span
-                            className="nav-main-header-link">Web Content Management</span></a>
+                            className="nav-main-header-link">Quick Edit</span></a>
                         <ul className="right hide-on-med-and-down">
                             {isAuthenticated ? (
                                 <li>

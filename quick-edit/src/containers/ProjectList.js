@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-/*import ProjectContent from '../containers/ProjectContent';*/
 import {connect} from 'react-redux';
 import {initializeAccordion} from '../utils/accordion-utils';
 import {projectSelector} from '../reselect/projects-reselect';
 import {getProjectByProjectId} from '../redux/actions/project-actions';
-
+import Content from '../components/Content';
 
 class ProjectList extends Component {
     static propTypes = {
@@ -22,7 +21,19 @@ class ProjectList extends Component {
                             return (
                                 <li key={i}>
                                     <div className="collapsible-header">{project.project}</div>
-                                    <div className="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                                    <div className="collapsible-body">
+                                        <ul className="collection">
+                                            {
+                                                project.contents.map((content, i) => {
+                                                    return (
+                                                        <li key={i} className="collection-item">
+                                                            <Content content={content} />
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
                                 </li>
                             )
                         })

@@ -312,7 +312,7 @@ router.get('/getContentByProject/:projectId', async (req, res, next) => {
  *                          message:
  *                              type: string
  */
-router.put('/updateContent/:contentId', userAuth, userProjectRoleMiddleware, async (req, res, next) => {
+router.put('/updateContent/:contentId', userAuth, async (req, res, next) => {
     if (req.body.content) {
         return updateContent(res, req.params.contentId, req.body, req.headers, req.user.id);
     } else {
@@ -363,7 +363,7 @@ async function updateContent(res, contentId, content, headers, userId) {
         }, contentHistory);
 
         if (response && response.statusCode === 201) {
-            res.status(201).send(result.toJSON());
+            res.status(200).send(result.toJSON());
         } else {
             res.status(500).send({message: 'Unable to create new Content'});
         }
